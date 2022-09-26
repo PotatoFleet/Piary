@@ -1,0 +1,357 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@500&display=swap");
+
+*,
+*::before,
+*::after {
+  font-family: Nunito, sans-serif;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-dark: 1, 182, 54;
+  --primary: 59, 209, 111;
+  --primary-light: 116, 227, 154;
+  --secondary-light: 227, 227, 227;
+  --secondary-dark: 152, 152, 152;
+}
+
+html,
+body,
+#root,
+.App {
+  margin: 0;
+  height: 100vh;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.auth-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+}
+
+.auth-page > .background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: rgb(var(--primary));
+}
+
+.auth-form {
+  background: white;
+  width: 21.5em;
+  aspect-ratio: 4 / 5;
+  border-radius: 0.5em;
+  padding: 0 1em;
+}
+
+.auth-form__heading {
+  color: rgb(var(--primary));
+  text-align: center;
+}
+
+.auth-form__main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+}
+
+.auth-form__submit {
+  cursor: pointer;
+  color: white;
+  background: rgb(var(--primary));
+  font-size: 1rem;
+  border: none;
+  padding: 0.75em;
+  border-radius: 0.25em;
+}
+
+.auth-form__submit:focus {
+  outline: none;
+  box-shadow: 0 0 5px 0 rgb(var(--primary-light));
+}
+
+.auth-form__main input {
+  border: 1px solid rgb(var(--primary));
+  padding: 0.9em 0.5em;
+  border-radius: 0.25em;
+  transform: scaleY(1);
+  transform-origin: top;
+  transition: transform 125ms linear;
+}
+
+.auth-form__main input.hidden-input {
+  transform: scaleY(0);
+}
+
+.auth-form__main input.translate-input {
+  transform: translateY(calc(-100% - 0.75em));
+  transition: transform 125ms linear;
+}
+
+.auth-form__main input:focus {
+  outline: none;
+  box-shadow: 0 0 5px 0 rgb(var(--primary-light));
+}
+
+.auth-type-toggle {
+  cursor: pointer;
+  margin-bottom: 1em;
+  display: flex;
+  border: 1px solid rgb(var(--primary));
+  padding: 0.5em 0;
+  border-radius: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-type-toggle::before {
+  content: "";
+  width: 50%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 100vh;
+  background: rgb(var(--primary));
+  transition: transform 200ms ease-out;
+  z-index: -1;
+}
+
+.auth-type-toggle.register::before {
+  transform: translate(100%);
+}
+
+.auth-type-toggle > * {
+  user-select: none;
+  color: rgb(var(--primary));
+  width: 100%;
+  text-align: center;
+  transition: color 200ms ease-in;
+}
+
+.auth-type-toggle > *.active {
+  color: white;
+}
+
+.auth-error {
+  text-align: center;
+  background: white;
+  color: red;
+  width: 21.5em;
+  aspect-ratio: 6 / 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.5em;
+  padding: 0.5em;
+  transition: transform 30ms linear;
+}
+
+.auth-error.hidden-message {
+  transform: scaleY(0);
+}
+
+.full-page {
+  width: 100%;
+  height: 100vh;
+}
+
+.main-page > .username {
+  font-size: 5.25vh;
+  color: white;
+}
+
+.diary-webpage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-color: #9cffac;
+}
+
+.diary {
+  cursor: pointer;
+  height: 65%;
+  aspect-ratio: 5.75 / 8;
+  background: rgb(111, 196, 248);
+  position: relative;
+  border-radius: 0.65em;
+}
+
+.diary::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 9%;
+  background: rgb(111, 196, 248);
+  border-right: 1vh solid rgb(72, 183, 251);
+  border-top-left-radius: 0.2em;
+  border-bottom-left-radius: 0.2em;
+}
+
+.diary-page {
+  width: 450px;
+  height: 600px;
+  background-color: #9cffac;
+  position: relative;
+}
+
+.options-page {
+  display: flex;
+  justify-content: center;
+  gap: 1vh;
+  background: rgb(253, 211, 175);
+}
+
+.diary-page__canvas {
+  width: 450px;
+  height: 600px;
+  background: rgb(255, 226, 200);
+  margin: 0;
+}
+
+.options-page__options {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.5);
+  filter: blur(0.5);
+  gap: 1vh;
+  display: flex;
+  z-index: 10;
+}
+
+.options-page__options__option {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.btn {
+  width: max-content;
+  cursor: pointer;
+  color: white;
+  border: none;
+  border-radius: 0.25em;
+  padding: 1em 1.25em;
+  font-size: 1em;
+  background-color: rgb(var(--primary));
+}
+
+.btn--green {
+  background-color: rgb(var(--primary));
+}
+
+.btn--red {
+  background-color: rgb(var(--secondary-dark));
+}
+
+.btn--save {
+  padding: 0.75em 1.75em;
+}
+
+.options-page__btn {
+  font-size: 1.2em;
+  padding: 1.25em 1.75em;
+}
+
+.new-entry-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1em;
+  background: rgb(253, 211, 175);
+}
+
+.new-entry-page__diary-pages {
+  display: flex;
+  justify-content: center;
+  gap: 1vh;
+}
+
+.diary-textarea {
+  position: absolute;
+  resize: none;
+  z-index: 10;
+  top: 24px;
+  left: 8px;
+  width: calc(100% - 15px);
+  height: calc(100% - 26px);
+  border: none;
+  background: none;
+  line-height: 24px;
+}
+
+.diary-textarea--new {
+  text-indent: calc(450px / 6);
+  top: 72px; /* 3 * 26px */
+}
+
+.diary-textarea:focus {
+  outline: none;
+}
+
+.diary-page__date {
+  position: absolute;
+  top: 26px;
+  left: 10px;
+  display: flex;
+  gap: 7px;
+}
+
+.diary-page__date__slot {
+  line-height: 24px;
+  width: 30px;
+  height: 30px;
+  resize: none;
+  border: none;
+  background: none;
+  text-align: center;
+}
+
+.diary-page__date__slot:focus {
+  outline: none;
+  word-break: keep-all;
+}
+
+.new-entry-page__options {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.entries {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 0.75em;
+  background: rgb(253, 211, 175);
+}
+
+.entry {
+  cursor: pointer;
+  color: white;
+  font-size: 1.3em;
+  text-shadow: 0 0 2px white;
+}
