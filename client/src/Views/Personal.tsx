@@ -4,6 +4,7 @@ import Options from "./Personal/Options";
 import NewEntry from "./Personal/NewEntry";
 import ViewMenu from "./Personal/View/ViewMenu";
 import ViewEntry from "./Personal/View/ViewEntry";
+import HomeIcon from "../Components/HomeIcon";
 
 interface PersonalProps {
   APIEndpoint: String;
@@ -30,6 +31,7 @@ const Personal: React.FC<PersonalProps> = (
           element={<ViewEntry APIEndpoint={props.APIEndpoint} />}
         />
       </Routes>
+      <HomeIcon />
     </div>
   );
 };

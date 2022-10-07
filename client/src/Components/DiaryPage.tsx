@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import resizeCanvas from "../../Util/ResizeCanvas";
-import insertTextAtCursor from "../../Util/Caret";
+import resizeCanvas from "../Util/ResizeCanvas";
+import insertTextAtCursor from "../Util/Caret";
 
 const drawFirstPageRules: Function = (canvas: HTMLCanvasElement): void => {
   const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
@@ -141,12 +141,11 @@ const DiaryPage: React.FC<DiaryPageProps> = (props: DiaryPageProps) => {
           entryContent[props.index] = e.target.value;
           props.setEntryContent(entryContent);
         }}
-        disabled={props.mutable === true}
-      >
-        {props.content || ""}
-      </textarea>
+        disabled={props.mutable === false}
+        defaultValue={props.content || ""}
+      ></textarea>
       <div className="diary-page__date">
-        <textarea
+        <input
           className="diary-page__date__slot"
           name="day"
           maxLength={2}
@@ -154,11 +153,10 @@ const DiaryPage: React.FC<DiaryPageProps> = (props: DiaryPageProps) => {
             if (props.setDate)
               props.setDate({ ...props.date, day: parseInt(e.target.value) });
           }}
-          disabled={props.mutable === true}
-        >
-          {props.contentDate?.day || ""}
-        </textarea>
-        <textarea
+          disabled={props.mutable === false}
+          defaultValue={props.first ? props.contentDate?.day || "" : ""}
+        />
+        <input
           className="diary-page__date__slot"
           name="month"
           maxLength={2}
@@ -166,11 +164,10 @@ const DiaryPage: React.FC<DiaryPageProps> = (props: DiaryPageProps) => {
             if (props.setDate)
               props.setDate({ ...props.date, month: parseInt(e.target.value) });
           }}
-          disabled={props.mutable === true}
-        >
-          {props.contentDate?.month || ""}
-        </textarea>
-        <textarea
+          disabled={props.mutable === false}
+          defaultValue={props.first ? props.contentDate?.month || "" : ""}
+        />
+        <input
           className="diary-page__date__slot"
           name="year"
           maxLength={2}
@@ -178,10 +175,9 @@ const DiaryPage: React.FC<DiaryPageProps> = (props: DiaryPageProps) => {
             if (props.setDate)
               props.setDate({ ...props.date, year: parseInt(e.target.value) });
           }}
-          disabled={props.mutable === true}
-        >
-          {props.contentDate?.year || ""}
-        </textarea>
+          disabled={props.mutable === false}
+          defaultValue={props.first ? props.contentDate?.year || "" : ""}
+        />
       </div>
     </div>
   );

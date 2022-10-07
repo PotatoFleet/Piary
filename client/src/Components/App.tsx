@@ -1,10 +1,10 @@
 import axios from "axios";
 import { Routes, Route } from "react-router-dom";
 import RequireLogin from "../Util/RequireLogin";
-import Auth from "./Auth";
-import Index from "./Index";
-import Logout from "./Logout";
-import Personal from "./Personal";
+import Auth from "../Views/Auth";
+import Index from "../Views/Index";
+import Logout from "../Views/Logout";
+import Personal from "../Views/Personal";
 
 axios.defaults.withCredentials = true;
 

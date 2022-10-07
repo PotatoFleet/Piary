@@ -7,6 +7,7 @@ const bodyParser = require("body-parser");
 const User = require("./models/User");
 const Piary = require("./models/Piary");
 const Entry = require("./models/Entry");
+const DateModel = require("./models/Date");
 
 require("dotenv").config({ path: "./config.env" });
 
@@ -25,7 +26,7 @@ app.use(
   })
 );
 
-app.get("/logged-in", (req, res) => {
+app.get("/logged-in", async (req, res) => {
   if (req.session.user === undefined) {
     res.send({ successful: false, message: "User not in session" });
   } else res.send({ successful: true, message: "User is logged in" });
@@ -77,6 +78,9 @@ app.get("/entries", async (req, res) => {
   );
   const piary = await user.piary.populate("entries");
   const entries = piary.entries;
+  for (let entry of entries) {
+    entry = await entry.populate("date");
+  }
   res.send(entries);
 });
 
@@ -85,9 +89,17 @@ app.get("/entry", async (req, res) => {
     "piary"
   );
   const piary = await user.piary.populate("entries");
-  for (const entry of piary.entries) {
+  for (let entry of piary.entries) {
+    entry = await entry.populate("date");
     if (entry.id == req.query.entryID) {
-      res.send(entry.pages);
+      res.send({
+        text: entry.pages,
+        date: {
+          day: entry.date.day,
+          month: entry.date.month,
+          year: entry.date.year,
+        },
+      });
       return;
     }
   }
@@ -99,7 +111,13 @@ app.post("/new-entry", async (req, res) => {
     const user = await User.findOne({ username: req.session.user }).populate(
       "piary"
     );
-    const entry = new Entry({ date: req.body.date });
+    const date = new DateModel({
+      day: req.body.date.day,
+      month: req.body.date.month,
+      year: req.body.date.year,
+    });
+    date.save();
+    const entry = new Entry({ date: date });
     for (const page of req.body.pages) entry.pages.push(page);
     entry.save();
     const piary = await user.piary.populate("entries");

@@ -8,12 +8,10 @@ const userSchema = new mongoose.Schema({
   piary: { type: mongoose.Schema.Types.ObjectId, ref: "Piary" },
 });
 
-const SALT_WORK_FACTOR = 10;
-
 userSchema.pre("save", async function save(next) {
   if (!this.isModified("password")) return next();
   try {
-    const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
+    const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
     return next();
   } catch (err) {

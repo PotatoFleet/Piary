@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
-import DiaryPage from "../DiaryPage";
+import { useNavigate, useParams } from "react-router-dom";
+import DiaryPage from "../../../Components/DiaryPage";
 
 interface ViewEntryProps {
   APIEndpoint: String;
@@ -21,10 +21,11 @@ const ViewEntry: React.FC<ViewEntryProps> = (
       .then((res) => {
         if (res.data.length === 0) navigate("/personal/view");
         const pages = [];
-        for (let i = 0; i < res.data.length; i++) {
+        for (let i = 0; i < res.data.text.length; i++) {
           pages.push(
             <DiaryPage
-              content={res.data[i]}
+              content={res.data.text[i]}
+              contentDate={res.data.date}
               mutable={false}
               first={i === 0}
               key={i}

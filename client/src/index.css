@@ -11,6 +11,7 @@
   --primary-dark: 1, 182, 54;
   --primary: 59, 209, 111;
   --primary-light: 116, 227, 154;
+  --peach: 253, 211, 175;
   --secondary-light: 227, 227, 227;
   --secondary-dark: 152, 152, 152;
 }
@@ -21,6 +22,7 @@ body,
 .App {
   margin: 0;
   height: 100vh;
+  overflow-y: hidden;
 }
 
 .hidden {
@@ -212,8 +214,9 @@ body,
 .options-page {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 1vh;
-  background: rgb(253, 211, 175);
+  background: rgb(var(--peach));
 }
 
 .diary-page__canvas {
@@ -225,12 +228,9 @@ body,
 
 .options-page__options {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.5);
-  filter: blur(0.5);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   gap: 1vh;
   display: flex;
   z-index: 10;
@@ -240,8 +240,10 @@ body,
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 100%;
+  width: 450px;
+  height: 600px;
+  background: rgba(255, 255, 255, 0.3);
+  /* filter: blur(0.75); */
 }
 
 .btn {
@@ -277,7 +279,7 @@ body,
   flex-direction: column;
   justify-content: center;
   gap: 1em;
-  background: rgb(253, 211, 175);
+  background: rgb(var(--peach));
 }
 
 .new-entry-page__diary-pages {
@@ -313,11 +315,11 @@ body,
   top: 26px;
   left: 10px;
   display: flex;
-  gap: 7px;
+  gap: 10px;
 }
 
 .diary-page__date__slot {
-  line-height: 24px;
+  line-height: 22px;
   width: 30px;
   height: 30px;
   resize: none;
@@ -339,14 +341,14 @@ body,
 }
 
 .entries {
-  width: 50%;
+  width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  background: rgb(var(--peach));
   gap: 0.75em;
-  background: rgb(253, 211, 175);
 }
 
 .entry {
@@ -354,4 +356,27 @@ body,
   color: white;
   font-size: 1.3em;
   text-shadow: 0 0 2px white;
+}
+
+.view-entry-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgb(var(--peach));
+}
+
+input:disabled,
+textarea:disabled {
+  color: black;
+}
+
+.home {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  transition: transform 200ms ease-out;
+}
+
+.home:hover {
+  transform: scale(1.1);
 }

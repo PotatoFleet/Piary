@@ -1,7 +1,11 @@
 const mongoose = require("mongoose");
 
 const entrySchema = new mongoose.Schema({
-  date: Date, // new Entry({ date: '2022-9-30' })
+  date: {
+    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Date",
+  },
   pages: [
     {
       type: String,

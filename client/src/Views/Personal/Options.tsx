@@ -1,5 +1,5 @@
 import { NavigateFunction, useNavigate } from "react-router-dom";
-import DiaryPage from "./DiaryPage";
+import DiaryPage from "../../Components/DiaryPage";
 
 interface OptionsProps {}
 
@@ -16,7 +16,7 @@ const Options: React.FC<OptionsProps> = (
         <div className="options-page__options__option options-page__options__new">
           <button
             className="options-page__btn btn btn--green"
-            onClick={(e) => {
+            onClick={() => {
               navigate("/personal/new");
             }}
           >
@@ -26,7 +26,7 @@ const Options: React.FC<OptionsProps> = (
         <div className="options-page__options__option options-page__options__view">
           <button
             className="options-page__btn btn btn--red"
-            onClick={(e) => {
+            onClick={() => {
               navigate("/personal/view");
             }}
           >

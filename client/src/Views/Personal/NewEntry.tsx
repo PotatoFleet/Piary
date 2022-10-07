@@ -1,5 +1,5 @@
 import { useState } from "react";
-import DiaryPage from "./DiaryPage";
+import DiaryPage from "../../Components/DiaryPage";
 import axios from "axios";
 
 interface NewEntryProps {
@@ -16,7 +16,6 @@ const NewEntry: React.FC<NewEntryProps> = (
     <div className="new-entry-page full-page">
       <div className="new-entry-page__diary-pages">
         <DiaryPage
-          height={(9 / 10) * document.body.clientHeight}
           first={true}
           index={0}
           entryContent={entryContent}
@@ -25,7 +24,6 @@ const NewEntry: React.FC<NewEntryProps> = (
           setDate={setDate}
         />
         <DiaryPage
-          height={(90 / 100) * document.body.clientHeight}
           first={false}
           index={1}
           entryContent={entryContent}
@@ -38,7 +36,11 @@ const NewEntry: React.FC<NewEntryProps> = (
           onClick={() => {
             axios
               .post(`${props.APIEndpoint}/new-entry`, {
-                date: `${date.year}-${date.month}-${date.day}`,
+                date: {
+                  day: date.day.pad(0, 2),
+                  month: date.month.pad(0, 2),
+                  year: date.year.pad(0, 2),
+                },
                 pages: entryContent,
               })
               .then((res) => {

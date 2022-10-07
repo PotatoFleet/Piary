@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import formatDate from "../../../Util/FormatDate";
 
 interface ViewMenuProps {
   APIEndpoint: String;
@@ -16,8 +17,8 @@ const ViewMenu: React.FC<ViewMenuProps> = (
   useEffect(() => {
     axios.get(`${props.APIEndpoint}/entries`).then((res) => {
       let e = [];
-      console.log(res.data[0].date);
       for (const entry of res.data) {
+        console.log(formatDate(entry.date));
         e.push(
           <div
             className="entry"
@@ -25,7 +26,7 @@ const ViewMenu: React.FC<ViewMenuProps> = (
               navigate(`/personal/view/${entry._id}`);
             }}
           >
-            {entry.date.split("T")[0]}
+            {formatDate(entry.date)}
           </div>
         );
       }
