@@ -1,6 +1,7 @@
 import { useState } from "react";
 import DiaryPage from "../../Components/DiaryPage";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 interface NewEntryProps {
   APIEndpoint: String;
@@ -11,6 +12,8 @@ const NewEntry: React.FC<NewEntryProps> = (
 ): React.ReactElement => {
   const [date, setDate] = useState({ day: 1, month: 1, year: 2000 });
   const [entryContent, setEntryContent] = useState([]);
+
+  const navigate = useNavigate();
 
   return (
     <div className="new-entry-page full-page">
@@ -47,6 +50,9 @@ const NewEntry: React.FC<NewEntryProps> = (
                 if (!res.data.successful) {
                   alert(res.data.message);
                 }
+              })
+              .then(() => {
+                navigate("/personal");
               });
           }}
         >
