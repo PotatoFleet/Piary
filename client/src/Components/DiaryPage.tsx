@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import resizeCanvas from "../Util/ResizeCanvas";
 import insertTextAtCursor from "../Util/Caret";
 
@@ -148,35 +148,61 @@ const DiaryPage: React.FC<DiaryPageProps> = (props: DiaryPageProps) => {
         <input
           className="diary-page__date__slot"
           name="day"
-          maxLength={2}
           onChange={(e) => {
+            e.target.value = e.target.value
+              .replaceAll(/[^0-9.]/g, "")
+              .slice(0, 2);
+            if (parseInt(e.target.value) > 31) e.target.value = "31";
             if (props.setDate)
-              props.setDate({ ...props.date, day: parseInt(e.target.value) });
+              props.setDate({
+                ...props.date,
+                day: Math.max(1, parseInt(e.target.value)),
+              });
           }}
           disabled={props.mutable === false}
-          defaultValue={props.first ? props.contentDate?.day || "" : ""}
+          defaultValue={
+            props.first
+              ? props.contentDate?.day.toString().padStart(2, "0") || "01"
+              : ""
+          }
         />
         <input
           className="diary-page__date__slot"
           name="month"
-          maxLength={2}
           onChange={(e) => {
+            e.target.value = e.target.value
+              .replaceAll(/[^0-9.]/g, "")
+              .slice(0, 2);
+            if (parseInt(e.target.value) > 12) e.target.value = "12";
             if (props.setDate)
-              props.setDate({ ...props.date, month: parseInt(e.target.value) });
+              props.setDate({
+                ...props.date,
+                month: Math.max(1, parseInt(e.target.value)),
+              });
           }}
           disabled={props.mutable === false}
-          defaultValue={props.first ? props.contentDate?.month || "" : ""}
+          defaultValue={
+            props.first
+              ? props.contentDate?.month.toString().padStart(2, "0") || "01"
+              : ""
+          }
         />
         <input
           className="diary-page__date__slot"
           name="year"
-          maxLength={2}
           onChange={(e) => {
+            e.target.value = e.target.value
+              .replaceAll(/[^0-9.]/g, "")
+              .slice(0, 2);
             if (props.setDate)
               props.setDate({ ...props.date, year: parseInt(e.target.value) });
           }}
           disabled={props.mutable === false}
-          defaultValue={props.first ? props.contentDate?.year || "" : ""}
+          defaultValue={
+            props.first
+              ? props.contentDate?.year.toString().padStart(2, "0") || "00"
+              : ""
+          }
         />
       </div>
     </div>

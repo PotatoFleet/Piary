@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const path = require("path");
 const session = require("express-session");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -13,9 +14,12 @@ require("dotenv").config({ path: "./config.env" });
 
 const PORT = process.env.PORT || 5000;
 
-mongoose.connect("mongodb://localhost/mongodb");
+mongoose.connect(process.env.DB_URL || "mongodb://localhost/mongodb");
 
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use("/static", express.static(path.join(__dirname, "static")));
+
+app.use(cors({ credentials: true, origin: process.env.ORIGIN }));
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(
@@ -26,13 +30,13 @@ app.use(
   })
 );
 
-app.get("/logged-in", async (req, res) => {
+app.get("/api/logged-in", (req, res) => {
   if (req.session.user === undefined) {
     res.send({ successful: false, message: "User not in session" });
   } else res.send({ successful: true, message: "User is logged in" });
 });
 
-app.get("/get-user", (req, res) => {
+app.get("/api/get-user", (req, res) => {
   if (req.session.user === undefined) {
     res.send({ successful: false, message: "User not in session" });
   }
@@ -44,7 +48,7 @@ app.get("/get-user", (req, res) => {
   });
 });
 
-app.post("/logout", (req, res) => {
+app.post("/api/logout", (req, res) => {
   if (req.session.user === undefined) {
     res.send({ successful: false, message: "User is not logged in" });
   } else {
@@ -53,10 +57,10 @@ app.post("/logout", (req, res) => {
   }
 });
 
-app.post("/login", async (req, res) => {
+app.post("/api/login", async (req, res) => {
   // finds users with given username and email
   const username = await User.findOne({ username: req.body.username });
-  const email = await User.findOne({ email: req.body.email });
+  const email = await User.findOne({ email: req.body.username });
 
   // checks if password matches
   if (
@@ -72,7 +76,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/entries", async (req, res) => {
+app.get("/api/entries", async (req, res) => {
   const user = await User.findOne({ username: req.session.user }).populate(
     "piary"
   );
@@ -84,7 +88,7 @@ app.get("/entries", async (req, res) => {
   res.send(entries);
 });
 
-app.get("/entry", async (req, res) => {
+app.get("/api/entry", async (req, res) => {
   const user = await User.findOne({ username: req.session.user }).populate(
     "piary"
   );
@@ -106,7 +110,7 @@ app.get("/entry", async (req, res) => {
   res.send([]);
 });
 
-app.post("/new-entry", async (req, res) => {
+app.post("/api/new-entry", async (req, res) => {
   try {
     const user = await User.findOne({ username: req.session.user }).populate(
       "piary"
@@ -126,12 +130,11 @@ app.post("/new-entry", async (req, res) => {
     user.save();
     res.send({ successful: true, message: "Successfully saved entry" });
   } catch (e) {
-    console.log(e);
     res.send({ successful: false, message: "Failed to save entry" });
   }
 });
 
-app.post("/register", async (req, res) => {
+app.post("/api/register", async (req, res) => {
   const usernameFound = await User.findOne({ username: req.body.username });
   const emailFound = await User.findOne({ email: req.body.email });
 
@@ -162,13 +165,20 @@ app.post("/register", async (req, res) => {
     piary.save();
     user.save();
   } catch (e) {
-    console.log(e);
+    res.send({
+      successful: false,
+      message: "Failed to create user",
+    });
   }
 
   res.send({
     successful: true,
     message: "Successfully registered",
   });
+});
+
+app.get("*", (_req, res) => {
+  res.sendFile(path.join(__dirname + "/index.html"));
 });
 
 app.listen(PORT);

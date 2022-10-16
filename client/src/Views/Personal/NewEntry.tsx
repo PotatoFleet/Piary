@@ -10,7 +10,7 @@ interface NewEntryProps {
 const NewEntry: React.FC<NewEntryProps> = (
   props: NewEntryProps
 ): React.ReactElement => {
-  const [date, setDate] = useState({ day: 1, month: 1, year: 2000 });
+  const [date, setDate] = useState({ day: 1, month: 1, year: 0 });
   const [entryContent, setEntryContent] = useState([]);
 
   const navigate = useNavigate();
@@ -40,9 +40,9 @@ const NewEntry: React.FC<NewEntryProps> = (
             axios
               .post(`${props.APIEndpoint}/new-entry`, {
                 date: {
-                  day: date.day.pad(0, 2),
-                  month: date.month.pad(0, 2),
-                  year: date.year.pad(0, 2),
+                  day: date.day.toString().padStart(2, "0"),
+                  month: date.month.toString().padStart(2, "0"),
+                  year: date.year.toString().padStart(2, "0"),
                 },
                 pages: entryContent,
               })
