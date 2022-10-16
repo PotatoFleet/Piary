@@ -136,7 +136,7 @@ const Auth: React.FC<AuthProps> = (props: AuthProps): React.ReactElement => {
             required={authType === "Login" ? false : true}
             tabIndex={authType === "Login" ? -1 : 0}
           />
-          <button className="auth-form__submit" id="login-btn">
+          <button type="submit" className="auth-form__submit" id="login-btn">
             {authType}
           </button>
         </div>
