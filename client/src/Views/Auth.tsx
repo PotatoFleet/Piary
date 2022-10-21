@@ -1,6 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
+import { Login, Logout } from "../Components/GoogleOAuth";
+import { gapi } from "gapi-script";
 import axios from "axios";
+
+const clientID =
+  "587877110685-cipbu5nn012o2gjti3v0ca17agn1ocha.apps.googleusercontent.com";
 
 interface AuthProps {
   APIEndpoint: String;
@@ -24,8 +29,19 @@ const Auth: React.FC<AuthProps> = (props: AuthProps): React.ReactElement => {
     }
   });
 
+  useEffect(() => {
+    gapi.load("client:auth2", () => {
+      gapi.client.init({
+        clientId: clientID,
+        scope: "",
+      });
+    });
+  });
+
   return (
     <div className="auth-page full-page">
+      <Login />
+      <Logout />
       <div
         className={`${
           errorMessage.length === 0 ? "hidden-message" : ""
