@@ -1,0 +1,3 @@
+[submodule "PiaryServer"]
+	path = PiaryServer
+	url = https://github.com/SupreetTadeparti/PiaryServer.git

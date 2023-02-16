@@ -31,7 +31,7 @@ const Auth: React.FC<AuthProps> = (props: AuthProps): React.ReactElement => {
 
   useEffect(() => {
     gapi.load("client:auth2", () => {
-      gapi.client.init({
+      gapi.auth2.init({
         clientId: clientID,
         scope: "",
       });
@@ -40,7 +40,10 @@ const Auth: React.FC<AuthProps> = (props: AuthProps): React.ReactElement => {
 
   return (
     <div className="auth-page full-page">
-      <Login setErrorMessage={setErrorMessage} APIEndpoint={props.APIEndpoint} />
+      <Login
+        setErrorMessage={setErrorMessage}
+        APIEndpoint={props.APIEndpoint}
+      />
       {/* <Logout /> */}
       <div
         className={`${
