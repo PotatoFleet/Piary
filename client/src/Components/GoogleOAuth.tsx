@@ -1,45 +1,82 @@
+import axios from "axios";
 import {
   GoogleLogin,
-  GoogleLogout,
   GoogleLoginResponse,
   GoogleLoginResponseOffline,
 } from "react-google-login";
+import gicon from "../static/img/googlelogo.png";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 
 const clientID =
   "587877110685-cipbu5nn012o2gjti3v0ca17agn1ocha.apps.googleusercontent.com";
 
-export const Login: React.FC = (): React.ReactElement => {
+interface LoginProps {
+  APIEndpoint: String;
+  setErrorMessage: Function;
+}
+
+export const Login: React.FC<LoginProps> = (
+  props: LoginProps
+): React.ReactElement => {
+  const navigate: NavigateFunction = useNavigate();
+
   const Success = (res: GoogleLoginResponse | GoogleLoginResponseOffline) => {
-    console.log("SUCCESSFULLY TO LOGIN!");
-    console.log(res);
+    if (!("profileObj" in res)) return;
+    axios
+      .post(`${props.APIEndpoint}/login`, {
+        username: res.profileObj.email,
+        password: res.profileObj.googleId,
+      })
+      .then((response) => {
+        if (!response.data.successful) {
+          axios
+            .post(`${props.APIEndpoint}/register`, {
+              username: res.profileObj.name,
+              email: res.profileObj.email,
+              password: res.profileObj.googleId,
+            })
+            .then((response) => {
+              if (!response.data.successful)
+                props.setErrorMessage(response.data.message);
+              else navigate("/");
+            });
+        } else navigate("/");
+      });
   };
 
   const Fail = (res: any) => {
-    console.log("FAILED TO LOGIN!");
+    console.log("FAILED TO LOG IN!");
     console.log(res);
   };
 
   return (
     <GoogleLogin
       clientId={clientID}
+      render={(renderProps) => {
+        return (
+          <div onClick={renderProps.onClick} className="google-login-btn">
+            <img src={gicon} alt="google logo" width="25" />
+            Sign in with Google
+          </div>
+        );
+      }}
       buttonText="Login"
       onSuccess={Success}
       onFailure={Fail}
-      isSignedIn={true}
     />
   );
 };
 
-export const Logout: React.FC = (): React.ReactElement => {
-  const Success = () => {
-    console.log("SUCCESSFULLY LOGGED OUT !");
-  };
+// export const Logout: React.FC = (): React.ReactElement => {
+//   const Success = () => {
+//     console.log("SUCCESSFULLY LOGGED OUT !");
+//   };
 
-  return (
-    <GoogleLogout
-      clientId={clientID}
-      buttonText="Logout"
-      onLogoutSuccess={Success}
-    />
-  );
-};
+//   return (
+//     <GoogleLogout
+//       clientId={clientID}
+//       buttonText="Logout"
+//       onLogoutSuccess={Success}
+//     />
+//   );
+// };

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
-import { Login, Logout } from "../Components/GoogleOAuth";
+import { Login } from "../Components/GoogleOAuth";
 import { gapi } from "gapi-script";
 import axios from "axios";
 
@@ -40,8 +40,8 @@ const Auth: React.FC<AuthProps> = (props: AuthProps): React.ReactElement => {
 
   return (
     <div className="auth-page full-page">
-      <Login />
-      <Logout />
+      <Login setErrorMessage={setErrorMessage} APIEndpoint={props.APIEndpoint} />
+      {/* <Logout /> */}
       <div
         className={`${
           errorMessage.length === 0 ? "hidden-message" : ""

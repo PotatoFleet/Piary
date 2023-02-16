@@ -2,10 +2,14 @@ import React, { useEffect, useRef } from "react";
 import resizeCanvas from "../Util/ResizeCanvas";
 import insertTextAtCursor from "../Util/Caret";
 
+const lineHeight = 30;
+
 const drawFirstPageRules: Function = (canvas: HTMLCanvasElement): void => {
   const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
 
   if (ctx === null) return;
+
+  ctx.translate(0.5, 0.5);
 
   ctx.lineWidth = Math.round(1);
   ctx.font = "Arial 25px";
@@ -14,32 +18,25 @@ const drawFirstPageRules: Function = (canvas: HTMLCanvasElement): void => {
     if (i === 2) {
       // draw date template
 
-      let start: number = 10;
+      let start = 10;
 
       for (let j = 0; j < 3; j++, start += canvas.height / 15) {
+        const y = Math.round(i * lineHeight);
+
         ctx.beginPath();
 
         // date underline
 
-        ctx.moveTo(start, Math.round(i * (canvas.height / 25)) + 0.5);
+        ctx.moveTo(start, y);
 
-        ctx.lineTo(
-          start + canvas.height / 20,
-          Math.round(i * (canvas.height / 25)) + 0.5
-        );
+        ctx.lineTo(start + canvas.height / 20, y);
 
         if (j !== 2) {
           // division slash
 
-          ctx.moveTo(
-            start + canvas.height / 20 + 5,
-            Math.round(i * (canvas.height / 25)) + 0.5
-          );
+          ctx.moveTo(start + canvas.height / 20 + 5, y);
 
-          ctx.lineTo(
-            start + canvas.height / 20 + 10,
-            Math.round(i * (canvas.height / 25)) + 0.5 - 20
-          );
+          ctx.lineTo(start + canvas.height / 20 + 10, y - 20);
         }
 
         ctx.stroke();
@@ -53,12 +50,9 @@ const drawFirstPageRules: Function = (canvas: HTMLCanvasElement): void => {
     ctx.beginPath();
 
     // Indentation
-    ctx.moveTo(
-      (i === 4 ? canvas.width / 6 : 0) + 10,
-      Math.round(i * (canvas.height / 25)) + 0.5
-    );
+    ctx.moveTo((i === 4 ? canvas.width / 6 : 0) + 10, i * lineHeight);
 
-    ctx.lineTo(canvas.width - 15, Math.round(i * (canvas.height / 25)) + 0.5);
+    ctx.lineTo(canvas.width - 15, i * lineHeight);
 
     ctx.stroke();
   }
@@ -68,15 +62,16 @@ const drawRules: Function = (canvas: HTMLCanvasElement): void => {
   const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
 
   if (ctx === null) return;
+  ctx.translate(0.5, 0.5);
 
   ctx.lineWidth = Math.round(canvas.height / 1000);
   ctx.font = "Arial 25px";
 
   for (let i = 2; i < 22; i++) {
     ctx.beginPath();
-    ctx.moveTo(10, Math.round(i * (canvas.height / 25)) + 0.5);
+    ctx.moveTo(10, i * lineHeight);
 
-    ctx.lineTo(canvas.width - 15, Math.round(i * (canvas.height / 25)) + 0.5);
+    ctx.lineTo(canvas.width - 15, i * lineHeight);
 
     ctx.stroke();
   }
@@ -106,10 +101,11 @@ const DiaryPage: React.FC<DiaryPageProps> = (props: DiaryPageProps) => {
   const canvas = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    const height = Math.min(700, (document.body.clientHeight * 3) / 4);
     resizeCanvas(
       canvas.current,
-      props.width ? props.width : 450,
-      props.height ? props.height : 600
+      props.width ? props.width : (3 * height) / 4,
+      props.height ? props.height : height
     );
     if (props.first) {
       drawFirstPageRules(canvas.current);
@@ -128,6 +124,13 @@ const DiaryPage: React.FC<DiaryPageProps> = (props: DiaryPageProps) => {
           if (e.key === "Tab") {
             e.preventDefault();
             insertTextAtCursor(e.target, " ".repeat(8));
+          } else if (e.key === "Enter") {
+            if (
+              (e.target as HTMLTextAreaElement).value.split("\n").length ===
+              21 - (props.first ? 2 : 0)
+            ) {
+              e.preventDefault();
+            }
           }
         }}
         onChange={(e) => {

@@ -10,15 +10,17 @@ const Piary = require("./models/Piary");
 const Entry = require("./models/Entry");
 const DateModel = require("./models/Date");
 
-require("dotenv").config({ path: "./config.env" });
-
-const PORT = process.env.PORT || 5000;
-
-mongoose.connect(process.env.DB_URL || "mongodb://localhost/mongodb");
+const PORT = 5000;
 
 app.use("/static", express.static(path.join(__dirname, "static")));
 
-app.use(cors({ credentials: true, origin: process.env.ORIGIN }));
+let origin = "http://localhost:3000";
+
+if (process.env.NODE_ENV === "production") {
+  origin = "https://piary.glitch.me";
+}
+
+app.use(cors({ credentials: true, origin: origin }));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -97,7 +99,8 @@ app.get("/api/entry", async (req, res) => {
     entry = await entry.populate("date");
     if (entry.id == req.query.entryID) {
       res.send({
-        text: entry.pages,
+        title: entry.title,
+        pages: entry.pages,
         date: {
           day: entry.date.day,
           month: entry.date.month,
@@ -121,8 +124,11 @@ app.post("/api/new-entry", async (req, res) => {
       year: req.body.date.year,
     });
     date.save();
-    const entry = new Entry({ date: date });
-    for (const page of req.body.pages) entry.pages.push(page);
+    const entry = new Entry({
+      title: req.body.title,
+      date: date,
+      pages: req.body.pages,
+    });
     entry.save();
     const piary = await user.piary.populate("entries");
     piary.entries.push(entry);
@@ -181,4 +187,11 @@ app.get("*", (_req, res) => {
   res.sendFile(path.join(__dirname + "/index.html"));
 });
 
-app.listen(PORT);
+mongoose.connect(
+  process.env.DB_URL || "mongodb://127.0.0.1:27017/mongodb",
+  () => {
+    app.listen(PORT, () => {
+      console.log(`Listening on Port ${PORT}`);
+    });
+  }
+);

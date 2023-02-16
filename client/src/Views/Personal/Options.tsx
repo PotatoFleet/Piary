@@ -10,8 +10,6 @@ const Options: React.FC<OptionsProps> = (
 
   return (
     <div className="options-page full-page">
-      <DiaryPage first={true} />
-      <DiaryPage first={true} />
       <div className="options-page__options">
         <div className="options-page__options__option options-page__options__new">
           <button
@@ -25,7 +23,7 @@ const Options: React.FC<OptionsProps> = (
         </div>
         <div className="options-page__options__option options-page__options__view">
           <button
-            className="options-page__btn btn btn--red"
+            className="options-page__btn btn btn--blue"
             onClick={() => {
               navigate("/personal/view");
             }}

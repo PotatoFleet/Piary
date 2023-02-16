@@ -18,7 +18,11 @@ const Index: React.FC<IndexProps> = (props: IndexProps): React.ReactElement => {
 
   return (
     <div className={`main-page diary-webpage`}>
-      <h1 className="username">{username}'s Diary</h1>
+      <h1 className="username">
+        {username}'s
+        <br />  
+        Diary
+      </h1>
       <div
         className="diary"
         onClick={(e) => {

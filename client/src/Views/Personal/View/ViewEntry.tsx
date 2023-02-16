@@ -13,6 +13,7 @@ const ViewEntry: React.FC<ViewEntryProps> = (
   const params = useParams();
   const navigate = useNavigate();
 
+  const [title, setTitle] = useState("");
   const [content, setContent] = useState([<></>]);
 
   useEffect(() => {
@@ -20,11 +21,12 @@ const ViewEntry: React.FC<ViewEntryProps> = (
       .get(`${props.APIEndpoint}/entry`, { params: { entryID: params.id } })
       .then((res) => {
         if (res.data.length === 0) navigate("/personal/view");
+        setTitle(res.data.title);
         const pages = [];
-        for (let i = 0; i < res.data.text.length; i++) {
+        for (let i = 0; i < res.data.pages.length; i++) {
           pages.push(
             <DiaryPage
-              content={res.data.text[i]}
+              content={res.data.pages[i]}
               contentDate={res.data.date}
               mutable={false}
               first={i === 0}
@@ -36,7 +38,12 @@ const ViewEntry: React.FC<ViewEntryProps> = (
       });
   }, []);
 
-  return <div className="view-entry-page full-page">{content}</div>;
+  return (
+    <div className="view-entry-page full-page">
+      <div className="entry-title">{title}</div>
+      <div className="view-entry-page__diary-pages">{content}</div>
+    </div>
+  );
 };
 
 export default ViewEntry;
