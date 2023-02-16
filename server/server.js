@@ -16,9 +16,7 @@ app.use("/static", express.static(path.join(__dirname, "static")));
 
 let origin = "http://localhost:3000";
 
-if (process.env.NODE_ENV === "production") {
-  origin = "https://piary.glitch.me";
-}
+if (process.env.NODE_ENV === "production") origin = "https://piary.glitch.me";
 
 app.use(cors({ credentials: true, origin: origin }));
 
