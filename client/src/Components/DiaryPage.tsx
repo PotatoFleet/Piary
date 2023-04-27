@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import resizeCanvas from "../Util/ResizeCanvas";
 import insertTextAtCursor from "../Util/Caret";
 
@@ -89,7 +89,7 @@ interface DiaryPageProps {
   first: boolean;
   content?: string;
   mutable?: boolean;
-  index?: number;
+  index: number;
   contentDate?: EntryDate;
   entryContent?: Array<string>;
   setEntryContent?: Function;
@@ -99,6 +99,7 @@ interface DiaryPageProps {
 
 const DiaryPage: React.FC<DiaryPageProps> = (props: DiaryPageProps) => {
   const canvas = useRef<HTMLCanvasElement>(null);
+  let [diaryValue, setDiaryValue] = useState("");
 
   useEffect(() => {
     const height = Math.min(700, (document.body.clientHeight * 3) / 4);
@@ -112,6 +113,8 @@ const DiaryPage: React.FC<DiaryPageProps> = (props: DiaryPageProps) => {
     } else {
       drawRules(canvas.current);
     }
+    if (props.content) setDiaryValue(props.content);
+    else if (props.entryContent) setDiaryValue(props.entryContent[props.index]);
   });
 
   return (
@@ -145,7 +148,7 @@ const DiaryPage: React.FC<DiaryPageProps> = (props: DiaryPageProps) => {
           props.setEntryContent(entryContent);
         }}
         disabled={props.mutable === false}
-        defaultValue={props.content || ""}
+        defaultValue={diaryValue}
       ></textarea>
       <div className="diary-page__date">
         <input

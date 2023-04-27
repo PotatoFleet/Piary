@@ -1,24 +1,16 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import formatDate from "../../../Util/FormatDate";
+import { request } from "../../../Util/Constants";
 
-interface ViewMenuProps {
-  APIEndpoint: String;
-}
-
-const ViewMenu: React.FC<ViewMenuProps> = (
-  props: ViewMenuProps
-): React.ReactElement => {
+const ViewMenu: React.FC = (): React.ReactElement => {
   const navigate = useNavigate();
 
   const [entries, setEntries] = useState([<></>]);
 
   useEffect(() => {
-    axios.get(`${props.APIEndpoint}/entries`).then((res) => {
+    request.get("/entries").then((res) => {
       let e = [];
       for (const entry of res.data) {
-        console.log(formatDate(entry.date));
         e.push(
           <div
             className="entry"
@@ -26,7 +18,7 @@ const ViewMenu: React.FC<ViewMenuProps> = (
               navigate(`/personal/view/${entry._id}`);
             }}
           >
-            {formatDate(entry.date)}
+            {entry.title}
           </div>
         );
       }

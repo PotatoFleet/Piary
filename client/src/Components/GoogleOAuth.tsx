@@ -1,4 +1,3 @@
-import axios from "axios";
 import {
   GoogleLogin,
   GoogleLoginResponse,
@@ -6,12 +5,12 @@ import {
 } from "react-google-login";
 import gicon from "../static/img/googlelogo.png";
 import { NavigateFunction, useNavigate } from "react-router-dom";
+import { request } from "../Util/Constants";
 
 const clientID =
   "587877110685-cipbu5nn012o2gjti3v0ca17agn1ocha.apps.googleusercontent.com";
 
 interface LoginProps {
-  APIEndpoint: String;
   setErrorMessage: Function;
 }
 
@@ -22,15 +21,15 @@ export const Login: React.FC<LoginProps> = (
 
   const Success = (res: GoogleLoginResponse | GoogleLoginResponseOffline) => {
     if (!("profileObj" in res)) return;
-    axios
-      .post(`${props.APIEndpoint}/login`, {
+    request
+      .post("/login", {
         username: res.profileObj.email,
         password: res.profileObj.googleId,
       })
       .then((response) => {
         if (!response.data.successful) {
-          axios
-            .post(`${props.APIEndpoint}/register`, {
+          request
+            .post("/register", {
               username: res.profileObj.name,
               email: res.profileObj.email,
               password: res.profileObj.googleId,
@@ -45,7 +44,6 @@ export const Login: React.FC<LoginProps> = (
   };
 
   const Fail = (res: any) => {
-    console.log("FAILED TO LOG IN!");
     console.log(res);
   };
 

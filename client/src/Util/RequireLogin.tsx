@@ -1,9 +1,8 @@
-import axios from "axios";
 import { useEffect } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
+import { request } from "./Constants";
 
 interface RequireLoginProps {
-  APIEndpoint: String;
   element: React.ReactElement;
 }
 
@@ -13,7 +12,7 @@ const RequireLogin: React.FC<RequireLoginProps> = (
   const navigate: NavigateFunction = useNavigate();
 
   useEffect(() => {
-    axios.get(`${props.APIEndpoint}/logged-in`).then((res) => {
+    request.get("/logged-in").then((res) => {
       if (!res.data.successful) {
         navigate("/auth");
       }

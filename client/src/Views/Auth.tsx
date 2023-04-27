@@ -2,16 +2,12 @@ import { useState, useEffect } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { Login } from "../Components/GoogleOAuth";
 import { gapi } from "gapi-script";
-import axios from "axios";
+import { request } from "../Util/Constants";
 
 const clientID =
   "587877110685-cipbu5nn012o2gjti3v0ca17agn1ocha.apps.googleusercontent.com";
 
-interface AuthProps {
-  APIEndpoint: String;
-}
-
-const Auth: React.FC<AuthProps> = (props: AuthProps): React.ReactElement => {
+const Auth: React.FC = (): React.ReactElement => {
   const [authType, setAuthType] = useState("Login");
 
   const [username, setUsername] = useState("");
@@ -23,14 +19,14 @@ const Auth: React.FC<AuthProps> = (props: AuthProps): React.ReactElement => {
 
   const navigate: NavigateFunction = useNavigate();
 
-  axios.get(`${props.APIEndpoint}/logged-in`).then((res) => {
+  request.get("/logged-in").then((res) => {
     if (res.data.successful) {
       navigate("/personal");
     }
   });
 
   useEffect(() => {
-    gapi.load("client:auth2", () => {
+    gapi.load("auth2", () => {
       gapi.auth2.init({
         clientId: clientID,
         scope: "",
@@ -40,10 +36,7 @@ const Auth: React.FC<AuthProps> = (props: AuthProps): React.ReactElement => {
 
   return (
     <div className="auth-page full-page">
-      <Login
-        setErrorMessage={setErrorMessage}
-        APIEndpoint={props.APIEndpoint}
-      />
+      <Login setErrorMessage={setErrorMessage} />
       {/* <Logout /> */}
       <div
         className={`${
@@ -64,8 +57,8 @@ const Auth: React.FC<AuthProps> = (props: AuthProps): React.ReactElement => {
               setErrorMessage("Password do not match");
               return;
             }
-            axios
-              .post(`${props.APIEndpoint}/register`, {
+            request
+              .post("/register", {
                 username: username,
                 email: email,
                 password: password,
@@ -78,8 +71,8 @@ const Auth: React.FC<AuthProps> = (props: AuthProps): React.ReactElement => {
                 navigate("/");
               });
           } else {
-            axios
-              .post(`${props.APIEndpoint}/login`, {
+            request
+              .post("/login", {
                 username: username,
                 password: password,
               })
