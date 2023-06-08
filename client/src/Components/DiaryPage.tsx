@@ -83,25 +83,67 @@ interface EntryDate {
   year: number;
 }
 
-interface DiaryPageProps {
+export interface DiaryPageProps {
+  // dimensions
   width?: number;
   height?: number;
+
+  // for whether or not to show date slot
   first: boolean;
+
+  // actual page's text content
   content?: string;
+
+  // new entry (mutable) or view entry (immutable)
   mutable?: boolean;
+
+  // background shade
+  color?: number[];
+
+  // key
+  key: number;
+
+  // index of diary page in entry
   index: number;
+
+  // date shown when viewing entry
   contentDate?: EntryDate;
-  entryContent?: Array<string>;
+
+  // list of each page's content. gets and sets content at index props.index
+  entryContent?: string[];
   setEntryContent?: Function;
+
+  // getting and setting date for new entry
   date?: EntryDate;
   setDate?: Function;
+
+  // the callback if the page is filled
+  pageFull?: Function;
+
+  // for focusing on next page's textarea
+  diaryTextareas?: React.RefObject<Array<HTMLTextAreaElement>>;
 }
 
 const DiaryPage: React.FC<DiaryPageProps> = (props: DiaryPageProps) => {
   const canvas = useRef<HTMLCanvasElement>(null);
+  const diaryPageRef = useRef<HTMLDivElement>(null);
+  const diaryTextareaRef = useRef<HTMLTextAreaElement>(null);
   let [diaryValue, setDiaryValue] = useState("");
 
   useEffect(() => {
+    console.log("In effect");
+    if (diaryTextareaRef.current !== null) {
+      if (props.diaryTextareas !== undefined) {
+        if (props.diaryTextareas.current !== null)
+          props.diaryTextareas.current[props.index] = diaryTextareaRef.current;
+      }
+    }
+    if (props.color !== undefined) {
+      diaryPageRef.current?.style.setProperty(
+        "--diary-clr",
+        `rgb(${props.color.join(", ")})`
+      );
+    }
     const height = Math.min(700, (document.body.clientHeight * 3) / 4);
     resizeCanvas(
       canvas.current,
@@ -115,12 +157,13 @@ const DiaryPage: React.FC<DiaryPageProps> = (props: DiaryPageProps) => {
     }
     if (props.content) setDiaryValue(props.content);
     else if (props.entryContent) setDiaryValue(props.entryContent[props.index]);
-  });
+  }, []);
 
   return (
-    <div className="diary-page">
+    <div className="diary-page" ref={diaryPageRef}>
       <canvas ref={canvas} className="diary-page__canvas"></canvas>
       <textarea
+        ref={diaryTextareaRef}
         className={`diary-textarea ${props.first ? "diary-textarea--new" : ""}`}
         spellCheck="false"
         onKeyDown={(e) => {
@@ -130,9 +173,10 @@ const DiaryPage: React.FC<DiaryPageProps> = (props: DiaryPageProps) => {
           } else if (e.key === "Enter") {
             if (
               (e.target as HTMLTextAreaElement).value.split("\n").length ===
-              21 - (props.first ? 2 : 0)
+              20 - (props.first ? 2 : 0)
             ) {
               e.preventDefault();
+              if (props.pageFull) props.pageFull();
             }
           }
         }}

@@ -1,14 +1,12 @@
-import { useEffect, useState } from "react";
-import DiaryPage from "../../Components/DiaryPage";
+import { useEffect, useRef, useState } from "react";
+import DiaryPage, { DiaryPageProps } from "../../Components/DiaryPage";
 import { useNavigate } from "react-router-dom";
 import { request } from "../../Util/Constants";
 
 const lastNonEmpty = (arr: string[]): number => {
   let i = arr.length - 1;
   while (i >= 0) {
-    if (arr[i] !== "") {
-      return i + 1;
-    }
+    if (arr[i] !== "") return i + 1;
     i--;
   }
   return arr.length;
@@ -22,32 +20,80 @@ const NewEntry: React.FC = (): React.ReactElement => {
 
   const [title, setTitle] = useState("");
   const [date, setDate] = useState({ day: day, month: month, year: year });
+  const [newFocus, setNewFocus] = useState(false);
   const [entryContent, setEntryContent] = useState([]);
-  const [diaryPages, setDiaryPages] = useState<React.ReactElement[]>([]);
+  const [diaryPages, setDiaryPages] = useState<DiaryPageProps[]>([]);
+  const diaryTextareas = useRef<HTMLTextAreaElement[]>([]);
+
   const [currPage, setCurrPage] = useState(0);
+
+  const diaryPagesRef = useRef<HTMLDivElement>(null);
 
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const addDiaryPage = () => {
     setDiaryPages([
-      <DiaryPage
-        key={0}
-        first={true}
-        index={0}
-        entryContent={entryContent}
-        setEntryContent={setEntryContent}
-        contentDate={date}
-        date={date}
-        setDate={setDate}
-      />,
-      <DiaryPage
-        first={false}
-        key={1}
-        index={1}
-        entryContent={entryContent}
-        setEntryContent={setEntryContent}
-      />,
+      ...diaryPages,
+      {
+        first: false,
+        key: diaryPages.length,
+        index: diaryPages.length,
+        entryContent: entryContent,
+        setEntryContent: setEntryContent,
+        diaryTextareas: diaryTextareas,
+      },
     ]);
+  };
+
+  const focusNext = (idx: number) => {
+    const nextIndex = idx + 1;
+    if (nextIndex === diaryTextareas.current.length) {
+      setNewFocus(true);
+      addDiaryPage();
+      diaryTextareas.current.push(document.createElement("textarea"));
+    }
+    diaryTextareas.current[nextIndex]?.focus();
+    if (idx === currPage + 1) setCurrPage(currPage + 1);
+  };
+
+  useEffect(() => {
+    if (newFocus) {
+      const newIndex = currPage + 1;
+      diaryTextareas.current[newIndex]?.focus();
+      setNewFocus(false);
+    }
+  }, [diaryTextareas, currPage, newFocus]);
+
+  useEffect(() => {
+    request.get("/diary-clr").then((res) => {
+      diaryPagesRef.current?.style.setProperty(
+        "--diary-clr",
+        `rgb(${res.data.color.join(", ")})`
+      );
+      setDiaryPages([
+        {
+          first: true,
+          key: 0,
+          index: 0,
+          entryContent: entryContent,
+          setEntryContent: setEntryContent,
+          contentDate: date,
+          date: date,
+          color: res.data.color,
+          setDate: setDate,
+          diaryTextareas: diaryTextareas,
+        },
+        {
+          first: false,
+          key: 1,
+          index: 1,
+          color: res.data.color,
+          entryContent: entryContent,
+          setEntryContent: setEntryContent,
+          diaryTextareas: diaryTextareas,
+        },
+      ]);
+    });
   }, []);
 
   return (
@@ -63,38 +109,41 @@ const NewEntry: React.FC = (): React.ReactElement => {
         />
       </div>
       <div className="diary-page-container">
-        <div
-          className={`diary-page-btn previous ${
-            currPage === 0 ? "hidden-opaque" : ""
-          }`}
-          onClick={() => {
-            setCurrPage(currPage - 1);
-          }}
-        >
-          Previous
-        </div>
-        <div className="new-entry-page__diary-pages">
-          {diaryPages.slice(currPage, currPage + 2)}
-        </div>
-        <div
-          className="diary-page-btn next"
-          onClick={() => {
-            if (currPage === diaryPages.length - 2) {
-              setDiaryPages((curr) => [
-                ...curr,
-                <DiaryPage
-                  first={false}
-                  key={diaryPages.length}
-                  index={diaryPages.length}
-                  entryContent={entryContent}
-                  setEntryContent={setEntryContent}
-                />,
-              ]);
-            }
-            setCurrPage(currPage + 1);
-          }}
-        >
-          Next
+        <div className="diary-pages" ref={diaryPagesRef}>
+          <div
+            className={`diary-page-btn previous ${
+              currPage === 0 ? "disabled" : ""
+            }`}
+            onClick={(e) => {
+              if ((e.target as HTMLDivElement).classList.contains("disabled"))
+                return;
+              setCurrPage(currPage - 1);
+            }}
+          ></div>
+          {diaryPages
+            .map((data, idx) => (
+              <DiaryPage
+                first={data.first}
+                key={idx}
+                index={data.index}
+                entryContent={data.entryContent}
+                setEntryContent={data.setEntryContent}
+                contentDate={data.date}
+                date={data.date}
+                color={data.color}
+                setDate={data.setDate}
+                diaryTextareas={data.diaryTextareas}
+                pageFull={() => focusNext(idx)}
+              />
+            ))
+            .slice(currPage, currPage + 2)}
+          <div
+            className="diary-page-btn next"
+            onClick={() => {
+              if (currPage === diaryPages.length - 2) addDiaryPage();
+              setCurrPage(currPage + 1);
+            }}
+          ></div>
         </div>
       </div>
       <div className="new-entry-page__options">

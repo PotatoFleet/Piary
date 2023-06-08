@@ -13,22 +13,22 @@ const Options: React.FC<OptionsProps> = (
       <div className="options-page__options">
         <div className="options-page__options__option options-page__options__new">
           <button
-            className="options-page__btn btn btn--green"
+            className="options-page__btn btn btn--large"
             onClick={() => {
               navigate("/personal/new");
             }}
           >
-            New Entry
+            New Entry 📝
           </button>
         </div>
         <div className="options-page__options__option options-page__options__view">
           <button
-            className="options-page__btn btn btn--blue"
+            className="options-page__btn btn btn--dark"
             onClick={() => {
               navigate("/personal/view");
             }}
           >
-            View Entry
+            View Entry 👁️
           </button>
         </div>
       </div>
