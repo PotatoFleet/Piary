@@ -131,7 +131,6 @@ const DiaryPage: React.FC<DiaryPageProps> = (props: DiaryPageProps) => {
   let [diaryValue, setDiaryValue] = useState("");
 
   useEffect(() => {
-    console.log("In effect");
     if (diaryTextareaRef.current !== null) {
       if (props.diaryTextareas !== undefined) {
         if (props.diaryTextareas.current !== null)
