@@ -409,6 +409,10 @@ body,
   z-index: 10;
 }
 
+.view-menu-page {
+  padding: 5em 0;
+}
+
 .new-entry-page,
 .view-entry-page {
   display: flex;
@@ -519,7 +523,7 @@ body,
   background-color: rgb(var(--primary));
   color: white;
   font-size: 1.5em;
-  padding: 1em;
+  padding: 0.7em;
   border-radius: 0.5em;
   box-shadow: 2px 2px 5px 1px rgba(0 0 0 / 0.25);
 }
