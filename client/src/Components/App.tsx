@@ -4,6 +4,7 @@ import Auth from "../Views/Auth";
 import Index from "../Views/Index";
 import Logout from "../Views/Logout";
 import Personal from "../Views/Personal";
+import NotFound from "../Views/NotFound";
 
 const App: React.FC = (): React.ReactElement => {
   return (
@@ -16,6 +17,7 @@ const App: React.FC = (): React.ReactElement => {
         />
         <Route path="/auth" element={<Auth />} />
         <Route path="/logout" element={<Logout />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );

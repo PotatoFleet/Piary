@@ -24,6 +24,7 @@ const Index: React.FC = (): React.ReactElement => {
   const [username, setUsername] = useState();
   const [diaryClr, setDiaryClr] = useState([111, 196, 248]);
   const [colorPickerActive, setColorPickerActive] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
 
   const navigate = useNavigate();
 
@@ -65,7 +66,6 @@ const Index: React.FC = (): React.ReactElement => {
               id="color-picker-canvas"
               width="360"
               height="232"
-              // className={!colorPickerActive ? "transform-hidden" : ""}
               ref={colorPickerCanvas}
               onClick={(e) => {
                 if (colorPickerCanvas.current === null) return;
@@ -99,16 +99,37 @@ const Index: React.FC = (): React.ReactElement => {
                 setColorPickerActive(!colorPickerActive);
               }}
             />
-            {/* <img src={colorpicker} alt="" /> */}
           </div>
         </div>
-        <div
-          className="diary"
-          onClick={(e) => {
-            navigate("/personal/options");
-          }}
-        >
-          <div className="username">{username}</div>
+        <div className="diary-main">
+          <div
+            className={`new entry-option ${
+              showOptions ? "" : "transform-hidden"
+            }`}
+            onClick={() => {
+              navigate("/personal/new");
+            }}
+          >
+            New Entry 📝
+          </div>
+          <div
+            className="diary"
+            onClick={() => {
+              setShowOptions(!showOptions);
+            }}
+          >
+            <div className="username">{username}</div>
+          </div>
+          <div
+            className={`view entry-option ${
+              showOptions ? "" : "transform-hidden"
+            }`}
+            onClick={() => {
+              navigate("/personal/view");
+            }}
+          >
+            View Entry 👁️
+          </div>
         </div>
       </div>
     </div>

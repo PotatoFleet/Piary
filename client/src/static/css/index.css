@@ -19,6 +19,7 @@
   --primary: 102, 153, 204;
   --primary-light: 180, 205, 228;
   --secondary-light: 232, 232, 232;
+  --secondary: 190, 190, 190;
   --secondary-dark: 150, 150, 150;
 }
 
@@ -51,8 +52,7 @@ body,
 }
 
 .auth-page > .background {
-  background: #3bd16f;
-  background: rgb(var(--primary));
+  background-color: rgb(var(--secondary-light));
   height: 100%;
   left: 0;
   position: fixed;
@@ -63,7 +63,7 @@ body,
 
 .auth-form {
   aspect-ratio: 4 / 5;
-  background: #fff;
+  background-color: rgb(var(--primary));
   border-radius: 0.5em;
   padding: 0 1em;
   width: 21.5em;
@@ -71,10 +71,10 @@ body,
 }
 
 .auth-form__heading {
-  color: #3bd16f;
-  color: rgb(var(--primary));
+  color: white;
   text-align: center;
 }
+
 .auth-form__main {
   display: flex;
   flex-direction: column;
@@ -82,25 +82,27 @@ body,
 }
 
 .auth-form__submit {
-  background: #3bd16f;
-  background: rgb(var(--primary));
+  background-color: white;
   border: none;
   border-radius: 0.25em;
-  color: #fff;
+  color: rgb(var(--primary));
   cursor: pointer;
-  font-size: 1rem;
-  padding: 0.75em;
+  font-size: 1.2em;
+  padding: 0.5em;
+  transition-duration: 150ms;
+}
+
+.auth-form__submit:hover {
+  background-color: rgb(var(--secondary-light));
 }
 
 .auth-form__submit:focus {
-  box-shadow: 0 0 5px 0 #74e39a;
-  box-shadow: 0 0 5px 0 rgb(var(--primary-light));
+  box-shadow: 0 0 5px 0 rgb(var(--secondary-light));
   outline: none;
 }
 
 .auth-form__main input {
-  border: 1px solid #3bd16f;
-  border: 1px solid rgb(var(--primary));
+  border: 1px solid white;
   border-radius: 0.25em;
   padding: 0.9em 0.5em;
   -webkit-transform: scaleY(1);
@@ -126,14 +128,12 @@ body,
 }
 
 .auth-form__main input:focus {
-  box-shadow: 0 0 5px 0 #74e39a;
-  box-shadow: 0 0 5px 0 rgb(var(--primary-light));
+  box-shadow: 0 0 5px 0 white;
   outline: none;
 }
 
 .auth-type-toggle {
-  border: 1px solid #3bd16f;
-  border: 1px solid rgb(var(--primary));
+  border: 1px solid white;
   border-radius: 100vh;
   cursor: pointer;
   display: flex;
@@ -144,8 +144,7 @@ body,
 }
 
 .auth-type-toggle:before {
-  background: #3bd16f;
-  background: rgb(var(--primary));
+  background: white;
   border-radius: 100vh;
   content: "";
   height: 100%;
@@ -165,8 +164,7 @@ body,
 }
 
 .auth-type-toggle > * {
-  color: #3bd16f;
-  color: rgb(var(--primary));
+  color: white;
   text-align: center;
   transition: color 0.2s ease-in;
   -webkit-user-select: none;
@@ -176,13 +174,13 @@ body,
 }
 
 .auth-type-toggle > .active {
-  color: #fff;
+  color: rgb(var(--primary));
 }
 
 .auth-error {
   align-items: center;
   aspect-ratio: 6/1;
-  background: #fff;
+  background: rgb(var(--primary));
   border-radius: 0.5em;
   color: red;
   display: flex;
@@ -194,6 +192,7 @@ body,
   transition: transform 30ms linear, -webkit-transform 30ms linear;
   width: 21.5em;
 }
+
 .auth-error.hidden-message {
   -webkit-transform: scaleY(0);
   transform: scaleY(0);
@@ -215,6 +214,8 @@ body,
 }
 
 .diary > .username {
+  text-align: center;
+  user-select: none;
   font-size: min(2.6em, 5.5vh);
   color: rgba(255, 255, 255, 0.75);
 }
@@ -277,6 +278,10 @@ body,
   position: relative;
 }
 
+.diary-option path {
+  fill: rgb(var(--primary));
+}
+
 .diary-option::before {
   content: "";
   position: absolute;
@@ -284,7 +289,7 @@ body,
   right: 100%;
   width: 3px;
   height: 100%;
-  background-color: black;
+  background-color: rgb(var(--primary));
 }
 
 .diary-option > svg {
@@ -410,6 +415,9 @@ body,
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
+}
+
+.personal-page {
   background: rgb(var(--secondary-light));
 }
 
@@ -495,15 +503,59 @@ body,
   padding: 1.25em 1.75em;
 }
 
-.entries {
+.entries-container {
   width: 100%;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background: rgb(var(--secondary-light));
-  gap: 0.75em;
+  gap: 1em;
+}
+
+.entry-container {
+  counter-reset: entry-name;
+  width: 32%;
+  background-color: rgb(var(--primary));
+  color: white;
+  font-size: 1.5em;
+  padding: 1em;
+  border-radius: 0.5em;
+  box-shadow: 2px 2px 5px 1px rgba(0 0 0 / 0.25);
+}
+
+.entry-names-container {
+  margin: 0.75em 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.entry-name {
+  cursor: pointer;
+  width: 90%;
+  margin: 0 auto;
+  padding: 0.5em;
+  border-radius: 0.5em;
+  background-color: white;
+  color: rgb(var(--primary));
+  transition: transform 150ms, box-shadow 150ms;
+}
+
+.entry-name:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 8px 0 rgba(0 0 0 / 0.2);
+}
+
+.entry-name::before {
+  content: counter(entry-name) ". ";
+  counter-increment: entry-name;
+}
+
+.entry-date {
+  text-shadow: 0 0 1px white;
+  text-align: center;
+  font-size: 1.1em;
 }
 
 .entry {
@@ -523,7 +575,12 @@ textarea:disabled {
   position: fixed;
   top: 10px;
   left: 10px;
-  transition: transform 200ms ease-out;
+  transition: transform 100ms ease-out, box-shadow 100ms ease-out;
+}
+
+.home-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 6px 0 rgba(0 0 0 / 0.2);
 }
 
 .home-btn__icon {
@@ -548,10 +605,6 @@ textarea:disabled {
   background: rgba(0 0 0 / 0.25);
 }
 
-.home-btn:hover {
-  transform: scale(1.1);
-}
-
 .title-input,
 .entry-title {
   width: max-content;
@@ -568,16 +621,24 @@ textarea:disabled {
 }
 
 .google-login-btn {
-  padding: 1em;
+  padding: 0.6em;
   display: flex;
   align-items: center;
   gap: 1em;
-  background: white;
+  background: rgb(var(--primary));
+  color: white;
   border-radius: 0.5em;
   border: none;
   cursor: pointer;
   width: 21.5em;
   box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.25);
+}
+
+.google-login-btn > img {
+  box-sizing: initial;
+  padding: 0.25em;
+  background-color: white;
+  border-radius: 50%;
 }
 
 .diary-page-container {
@@ -652,4 +713,38 @@ textarea:disabled {
 .delete-alert__btn:hover {
   background-color: red;
   color: white;
+}
+
+.diary-main {
+  position: relative;
+}
+
+.entry-option {
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  color: rgba(255, 255, 255, 0.75);
+  position: absolute;
+  font-size: min(1.2em, 2.25vh);
+  width: 100%;
+  height: 3.5em;
+  border-radius: 0.5em;
+  left: 0;
+  background-color: var(--diary-clr);
+  box-shadow: 2px 2px 5px 1px rgba(0 0 0 / 0.25);
+  user-select: none;
+  transition: scale 150ms;
+}
+
+.new.entry-option {
+  bottom: 105%;
+}
+
+.view.entry-option {
+  top: 105%;
+}
+
+.not-found-page {
+  display: grid;
+  place-items: center;
 }
