@@ -28,6 +28,7 @@ const ViewMenu: React.FC = (): React.ReactElement => {
   return (
     <div className="view-menu-page full-page">
       <div className="entries-container">
+        <div className="entries-heading">Entries</div>
         {Object.keys(entries).map((date: string, idx: number) => (
           <div key={idx} className="entry-container">
             <div className="entry-date">{date}</div>

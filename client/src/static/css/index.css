@@ -409,10 +409,6 @@ body,
   z-index: 10;
 }
 
-.view-menu-page {
-  padding: 5em 0;
-}
-
 .new-entry-page,
 .view-entry-page {
   display: flex;
@@ -507,11 +503,18 @@ body,
   padding: 1.25em 1.75em;
 }
 
+.entries-heading {
+  font-size: 3em;
+  font-weight: bold;
+  color: rgb(var(--primary));
+  padding: 1em 0;
+}
+
 .entries-container {
   width: 100%;
   min-height: 100vh;
+  padding-bottom: 1em;
   display: flex;
-  justify-content: center;
   align-items: center;
   flex-direction: column;
   gap: 1em;
