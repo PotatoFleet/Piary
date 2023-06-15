@@ -6,4 +6,6 @@ const request = axios.create({
     withCredentials: true
 })
 
-export {API_ENDPOINT, request}
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);;
+
+export {API_ENDPOINT, request, isMobile}

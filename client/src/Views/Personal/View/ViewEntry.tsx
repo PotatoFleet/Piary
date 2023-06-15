@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import DiaryPage from "../../../Components/DiaryPage";
 import { request } from "../../../Util/Constants";
 import { ReactComponent as TrashIcon } from "../../../static/img/trash.svg";
+import { isMobile } from "../../../Util/Constants";
 
 const ViewEntry: React.FC = (): React.ReactElement => {
   const params = useParams();
@@ -15,6 +16,8 @@ const ViewEntry: React.FC = (): React.ReactElement => {
 
   const diaryPagesRef = useRef<HTMLDivElement>(null);
   const deleteAlertMessage = useRef<HTMLDivElement>(null);
+
+  const pagesShown = isMobile ? 1 : 2;
 
   useEffect(() => {
     request.get("/entry", { params: { entryID: params.id } }).then((res) => {
@@ -39,7 +42,7 @@ const ViewEntry: React.FC = (): React.ReactElement => {
             />
           );
         }
-        if (pages.length === 1) {
+        if (!isMobile && pages.length === 1) {
           pages.push(
             <DiaryPage
               first={false}
@@ -69,10 +72,10 @@ const ViewEntry: React.FC = (): React.ReactElement => {
               setCurrPage(currPage - 1);
             }}
           ></div>
-          {content.slice(currPage, currPage + 2)}
+          {content.slice(currPage, currPage + pagesShown)}
           <div
             className={`diary-page-btn next ${
-              currPage >= content.length - 2 ? "disabled" : ""
+              currPage >= content.length - pagesShown ? "disabled" : ""
             }`}
             onClick={(e) => {
               if ((e.target as HTMLDivElement).classList.contains("disabled"))
@@ -90,10 +93,9 @@ const ViewEntry: React.FC = (): React.ReactElement => {
         <div
           className="delete-alert__btn"
           onClick={() => {
-            console.log(params.id);
             request.post("/delete", { entryID: params.id }).then((res) => {
               if (res.data) {
-                navigate("/personal");
+                navigate("/personal/view");
               } else {
                 if (deleteAlertMessage.current)
                   deleteAlertMessage.current.textContent =

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { request } from "../../Util/Constants";
 import { ReactComponent as ColorPicker } from "../../static/img/colorpicker.svg";
+import { ReactComponent as GearIcon } from "../../static/img/gear.svg";
 import Colors from "../../static/img/colors.jpg";
 
 // cpc -> colorPickerCanvas
@@ -94,11 +95,7 @@ const Index: React.FC = (): React.ReactElement => {
             >
               Save
             </div>
-            <ColorPicker
-              onClick={() => {
-                setColorPickerActive(!colorPickerActive);
-              }}
-            />
+            <ColorPicker />
           </div>
         </div>
         <div className="diary-main">
@@ -131,6 +128,12 @@ const Index: React.FC = (): React.ReactElement => {
             View Entry 👁️
           </div>
         </div>
+      </div>
+      <div
+        className="settings-btn"
+        onClick={() => navigate("/personal/settings")}
+      >
+        <GearIcon />
       </div>
     </div>
   );

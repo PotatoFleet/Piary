@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import RequireLogin from "../Util/RequireLogin";
+import { RequireLogin } from "../Util/Util";
 import Auth from "../Views/Auth";
 import Index from "../Views/Index";
 import Logout from "../Views/Logout";

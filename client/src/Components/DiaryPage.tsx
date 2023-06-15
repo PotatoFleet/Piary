@@ -1,8 +1,26 @@
 import React, { useEffect, useRef, useState } from "react";
-import resizeCanvas from "../Util/ResizeCanvas";
-import insertTextAtCursor from "../Util/Caret";
+import { resizeCanvas } from "../Util/Util";
+import { insertTextAtCursor } from "../Util/Util";
 
-const lineHeight = 30;
+const lines = 18;
+
+const drawRules: Function = (canvas: HTMLCanvasElement): void => {
+  const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
+  if (ctx === null) return;
+
+  const lineHeight = canvas.height / (lines + 2);
+
+  ctx.translate(0.5, 0.5);
+  ctx.lineWidth = Math.round(canvas.height / 1000);
+  ctx.font = "Arial 25px";
+
+  for (let i = 2; i < lines + 2; i++) {
+    ctx.beginPath();
+    ctx.moveTo(10, i * lineHeight);
+    ctx.lineTo(canvas.width - 15, i * lineHeight);
+    ctx.stroke();
+  }
+};
 
 const drawFirstPageRules: Function = (canvas: HTMLCanvasElement): void => {
   const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
@@ -14,7 +32,9 @@ const drawFirstPageRules: Function = (canvas: HTMLCanvasElement): void => {
   ctx.lineWidth = Math.round(1);
   ctx.font = "Arial 25px";
 
-  for (let i = 2; i < 22; i++) {
+  const lineHeight = canvas.height / (lines + 2);
+
+  for (let i = 2; i < lines + 2; i++) {
     if (i === 2) {
       // draw date template
 
@@ -51,25 +71,6 @@ const drawFirstPageRules: Function = (canvas: HTMLCanvasElement): void => {
 
     // Indentation
     ctx.moveTo((i === 4 ? canvas.width / 6 : 0) + 10, i * lineHeight);
-
-    ctx.lineTo(canvas.width - 15, i * lineHeight);
-
-    ctx.stroke();
-  }
-};
-
-const drawRules: Function = (canvas: HTMLCanvasElement): void => {
-  const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
-
-  if (ctx === null) return;
-  ctx.translate(0.5, 0.5);
-
-  ctx.lineWidth = Math.round(canvas.height / 1000);
-  ctx.font = "Arial 25px";
-
-  for (let i = 2; i < 22; i++) {
-    ctx.beginPath();
-    ctx.moveTo(10, i * lineHeight);
 
     ctx.lineTo(canvas.width - 15, i * lineHeight);
 
@@ -143,17 +144,22 @@ const DiaryPage: React.FC<DiaryPageProps> = (props: DiaryPageProps) => {
         `rgb(${props.color.join(", ")})`
       );
     }
-    const height = Math.min(700, (document.body.clientHeight * 3) / 4);
+    const width = Math.min(450, (document.body.clientWidth * 9.5) / 10);
     resizeCanvas(
       canvas.current,
-      props.width ? props.width : (3 * height) / 4,
-      props.height ? props.height : height
+      props.width ? props.width : width,
+      props.height ? props.height : (width * 4) / 3
     );
     if (props.first) {
       drawFirstPageRules(canvas.current);
     } else {
       drawRules(canvas.current);
     }
+    if (diaryPageRef.current && canvas.current)
+      diaryPageRef.current.style.setProperty(
+        "--line-height",
+        `${canvas.current.height / 20}px`
+      );
     if (props.content) setDiaryValue(props.content);
     else if (props.entryContent) setDiaryValue(props.entryContent[props.index]);
   }, []);
@@ -172,7 +178,7 @@ const DiaryPage: React.FC<DiaryPageProps> = (props: DiaryPageProps) => {
           } else if (e.key === "Enter") {
             if (
               (e.target as HTMLTextAreaElement).value.split("\n").length ===
-              20 - (props.first ? 2 : 0)
+              lines - (props.first ? 2 : 0)
             ) {
               e.preventDefault();
               if (props.pageFull) props.pageFull();

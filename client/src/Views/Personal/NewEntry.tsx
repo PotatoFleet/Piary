@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import DiaryPage, { DiaryPageProps } from "../../Components/DiaryPage";
 import { useNavigate } from "react-router-dom";
-import { request } from "../../Util/Constants";
+import { isMobile, request } from "../../Util/Constants";
 
 const lastNonEmpty = (arr: string[]): number => {
   let i = arr.length - 1;
@@ -30,6 +30,8 @@ const NewEntry: React.FC = (): React.ReactElement => {
   const diaryPagesRef = useRef<HTMLDivElement>(null);
 
   const navigate = useNavigate();
+
+  const pagesShown = isMobile ? 1 : 2;
 
   const addDiaryPage = () => {
     setDiaryPages([
@@ -98,13 +100,27 @@ const NewEntry: React.FC = (): React.ReactElement => {
 
   return (
     <div className="new-entry-page full-page">
-      <div className="new-entry-page__title-container">
+      <div className="title-container">
         <input
           onChange={(e) => {
             setTitle(e.target.value);
+
+            const maxLength = 10; // Set your desired character limit
+            const baseFontSize = 30; // Set your desired base font size
+            const scaleFactor = 0.99; // Adjust the scale factor as needed
+
+            if (e.target.value.length > maxLength) {
+              const fontSize =
+                baseFontSize *
+                Math.pow(scaleFactor, e.target.value.length - maxLength);
+              e.target.style.fontSize = fontSize + "px";
+            } else {
+              e.target.style.fontSize = baseFontSize + "px";
+            }
           }}
           type="text"
           placeholder="Title..."
+          maxLength={40}
           className="title-input"
         />
       </div>
@@ -136,11 +152,11 @@ const NewEntry: React.FC = (): React.ReactElement => {
                 pageFull={() => focusNext(idx)}
               />
             ))
-            .slice(currPage, currPage + 2)}
+            .slice(currPage, currPage + pagesShown)}
           <div
             className="diary-page-btn next"
             onClick={() => {
-              if (currPage === diaryPages.length - 2) addDiaryPage();
+              if (currPage === diaryPages.length - pagesShown) addDiaryPage();
               setCurrPage(currPage + 1);
             }}
           ></div>
@@ -148,7 +164,7 @@ const NewEntry: React.FC = (): React.ReactElement => {
       </div>
       <div className="new-entry-page__options">
         <div
-          className="btn btn--save"
+          className="btn btn--save btn--long"
           onClick={() => {
             if (
               entryContent.filter((el: string) => el.length !== 0).length === 0
